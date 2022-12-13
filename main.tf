@@ -1,5 +1,4 @@
 locals {
-  cwl_endpoint = "logs.${var.aws_region}.amazonaws.com"
 
   tags = {
     Terraform   = true
@@ -67,7 +66,6 @@ module "vpc" {
 
   tags = merge(
     local.tags,
-    var.tags,
     {
       Name                               = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
       "kubernetes.io/cluster/my-cluster" = "shared"
@@ -84,7 +82,6 @@ resource "aws_security_group" "sqs_vpc_endpoint_security_group" {
 
   tags = merge(
     local.tags,
-    var.tags,
     {
       Name = "${var.environment}-${var.project_name}-vpc-e-sqs"
     }
@@ -112,7 +109,6 @@ resource "aws_security_group" "sts_vpc_endpoint_security_group" {
 
   tags = merge(
     local.tags,
-    var.tags,
     {
       Name = "${var.environment}-${var.project_name}-vpc-e-sts"
     }
