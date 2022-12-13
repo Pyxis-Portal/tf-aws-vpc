@@ -54,8 +54,50 @@ variable "cidr_subnet_bits" {
   default = 3
 }
 
-variable tags {
+variable "tags" {
   type        = map(string)
-  default     = {} 
+  default     = {}
   description = "general tags"
+}
+
+variable "private_subnets" {
+  type = list(string)
+  default = []
+  description = "List of cidrs for subnets"
+}
+
+variable "public_subnets" {
+  type = list(string)
+  default = []
+  description = "List of cidrs for subnets"
+}
+
+variable "enable_nat_gateway" {
+  type = bool
+  default = false
+  description = "Whether to enable Nat Gateway. If private_subnets list is empty, this should"
+}
+
+variable vpc_endpoint {
+  type        = any
+  default     = []
+  description = "description"
+}
+
+variable vpc_enable_endpoint {
+  type        = bool
+  default     = false 
+  description = "description"
+}
+
+variable ec2_sg_ingress_rules {
+  type        = any
+  default     = []
+  description = "description"
+}
+
+variable ec2_sg_egress_rules {
+  type        = any
+  default     = []
+  description = "description"
 }

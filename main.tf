@@ -1,5 +1,5 @@
 locals {
-  
+
   tags = {
     Environment = var.environment
   }
@@ -29,7 +29,7 @@ module "vpc" {
 
   version = "2.71.0"
 
-  enable_nat_gateway     = true
+  enable_nat_gateway     = var.enable_nat_gateway && length(var.private_subnets) > 0 ? true : false
   one_nat_gateway_per_az = false
   enable_vpn_gateway     = false
   enable_dns_hostnames   = true
@@ -40,20 +40,8 @@ module "vpc" {
   name                   = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
   cidr                   = var.project_vpc_cidr
   azs                    = ["${var.aws_region}a", "${var.aws_region}b", "${var.aws_region}c", "${var.aws_region}d"]
-
-  private_subnets = [
-    cidrsubnet(var.project_vpc_cidr, var.cidr_subnet_bits, 0),
-    cidrsubnet(var.project_vpc_cidr, var.cidr_subnet_bits, 1),
-    cidrsubnet(var.project_vpc_cidr, var.cidr_subnet_bits, 2),
-    cidrsubnet(var.project_vpc_cidr, var.cidr_subnet_bits, 3)
-  ]
-
-  public_subnets = [
-    cidrsubnet(var.project_vpc_cidr, var.cidr_subnet_bits, 4),
-    cidrsubnet(var.project_vpc_cidr, var.cidr_subnet_bits, 5),
-    cidrsubnet(var.project_vpc_cidr, var.cidr_subnet_bits, 6),
-    cidrsubnet(var.project_vpc_cidr, var.cidr_subnet_bits, 7)
-  ]
+  private_subnets = var.private_subnets
+  public_subnets = var.public_subnets
 
   private_subnet_tags = {
     Name = var.vpc_name != "" ? "${var.vpc_name}-private-subnet" : "${var.environment}-private-${var.project_name}-subnet"
@@ -66,7 +54,7 @@ module "vpc" {
   tags = merge(
     local.tags,
     var.tags,
-  ) 
+  )
 }
 
 resource "aws_security_group" "sqs_vpc_endpoint_security_group" {
@@ -82,7 +70,7 @@ resource "aws_security_group" "sqs_vpc_endpoint_security_group" {
     {
       Name = "${var.environment}-${var.project_name}-vpc-e-sqs"
     }
-  ) 
+  )
 }
 
 resource "aws_vpc_endpoint" "sqs" {
@@ -110,7 +98,7 @@ resource "aws_security_group" "sts_vpc_endpoint_security_group" {
     {
       Name = "${var.environment}-${var.project_name}-vpc-e-sts"
     }
-  ) 
+  )
 }
 
 resource "aws_vpc_endpoint" "sts" {
@@ -132,4 +120,72 @@ resource "aws_vpc_endpoint" "dynamodb" {
   service_name        = data.aws_vpc_endpoint_service.dynamodb[0].service_name
   vpc_endpoint_type   = "Gateway"
   private_dns_enabled = false
+}
+
+resource "aws_vpc_endpoint" "this" {
+  count = var.vpc_enable_endpoint ? length(var.vpc_endpoint) : 0
+
+  service_name = var.vpc_endpoint[count.index].service_name
+  vpc_id       = module.vpc.vpc_id
+
+  vpc_endpoint_type  = lookup(var.vpc_endpoint[count.index], "type", "Gateway")
+  security_group_ids = lookup(var.vpc_endpoint[count.index], "security_group", false) ? lookup(var.vpc_endpoint[count.index], "security_group_ids", [aws_security_group.vpc_endpoint_security_group[0].id]) : null
+  subnet_ids         = lookup(var.vpc_endpoint[count.index], "subnet_ids", module.vpc.private_subnets)
+  #dns_options        = lookup(var.vpc_endpoint[count.index], "dns_options", null)
+  #ip_address_type    = lookup(var.vpc_endpoint[count.index], "ip_address_type", null)
+  route_table_ids    = lookup(var.vpc_endpoint[count.index], "type", "Gateway") == "Gateway" ? lookup(var.vpc_endpoint[count.index], "route_table_ids", module.vpc.private_route_table_ids) : null
+  policy             = lookup(var.vpc_endpoint[count.index], "policy", null)
+
+
+  private_dns_enabled = lookup(var.vpc_endpoint[count.index], "private_dns_enabled", false)
+
+
+  tags = merge(
+    local.tags,
+    var.tags,
+    {
+      Name = "${var.environment}-${var.project_name}-vpc-e-${lookup(var.vpc_endpoint[count.index], "name", "")}"
+    }
+  )
+}
+
+resource "aws_security_group" "vpc_endpoint_security_group" {
+  count       = var.vpc_enable_endpoint && length(var.ec2_sg_ingress_rules) > 0 || length(var.ec2_sg_egress_rules) > 0 ? 1 : 0
+  name        = "${var.environment}-${var.project_name}-vpc-SG"
+  description = "Controls Traffic to the AWS VPC Endpoint"
+  vpc_id      = module.vpc.vpc_id
+
+  dynamic "ingress" {
+    for_each = var.ec2_sg_ingress_rules
+
+    content {
+      description = ingress.value["description"]
+      from_port   = ingress.value["from_port"]
+      to_port     = ingress.value["to_port"]
+      cidr_blocks = ingress.value["cidr_blocks"]
+      protocol    = ingress.value["protocol"]
+    }
+  }
+
+  dynamic "egress" {
+    for_each = var.ec2_sg_egress_rules
+
+    content {
+      description = egress.value["description"]
+      from_port   = egress.value["from_port"]
+      to_port     = egress.value["to_port"]
+      cidr_blocks = egress.value["cidr_blocks"]
+      protocol    = egress.value["protocol"]
+    }
+  }
+
+  depends_on = [module.vpc]
+
+  tags = merge(
+    local.tags,
+    var.tags,
+    {
+      Name = "${var.environment}-${var.project_name}-vpc-SG"
+    }
+  )
 }

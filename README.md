@@ -1,45 +1,63 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+## Requirements
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.10 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 2.3.0 |
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+## Providers
 
----
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.10 |
 
-## Edit a file
+## Modules
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | 2.71.0 |
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+## Resources
 
----
+| Name | Type |
+|------|------|
+| [aws_security_group.sqs_vpc_endpoint_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_security_group.sts_vpc_endpoint_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_vpc_endpoint.dynamodb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.sts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint_service.dynamodb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_endpoint_service) | data source |
+| [aws_vpc_endpoint_service.sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_endpoint_service) | data source |
+| [aws_vpc_endpoint_service.sts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_endpoint_service) | data source |
 
-## Create a file
+## Inputs
 
-Next, you’ll add a new file to this repository.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | n/a | `string` | `"us-east-1"` | no |
+| <a name="input_cidr_subnet_bits"></a> [cidr\_subnet\_bits](#input\_cidr\_subnet\_bits) | n/a | `number` | `3` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | Nombre del ambiente. e.g, dev, qa, stg, prod | `string` | `"dev"` | no |
+| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | n/a | `string` | `"my-project"` | no |
+| <a name="input_project_vpc_cidr"></a> [project\_vpc\_cidr](#input\_project\_vpc\_cidr) | n/a | `string` | `"10.10.0.0/16"` | no |
+| <a name="input_single_nat_gateway"></a> [single\_nat\_gateway](#input\_single\_nat\_gateway) | n/a | `bool` | `true` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | general tags | `map(string)` | `{}` | no |
+| <a name="input_vpc_enable_dynamodb_endpoint"></a> [vpc\_enable\_dynamodb\_endpoint](#input\_vpc\_enable\_dynamodb\_endpoint) | n/a | `bool` | `false` | no |
+| <a name="input_vpc_enable_s3_endpoint"></a> [vpc\_enable\_s3\_endpoint](#input\_vpc\_enable\_s3\_endpoint) | n/a | `bool` | `false` | no |
+| <a name="input_vpc_enable_sqs_endpoint"></a> [vpc\_enable\_sqs\_endpoint](#input\_vpc\_enable\_sqs\_endpoint) | n/a | `bool` | `false` | no |
+| <a name="input_vpc_enable_sts_endpoint"></a> [vpc\_enable\_sts\_endpoint](#input\_vpc\_enable\_sts\_endpoint) | n/a | `bool` | `false` | no |
+| <a name="input_vpc_name"></a> [vpc\_name](#input\_vpc\_name) | n/a | `string` | `""` | no |
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+## Outputs
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
-
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+| Name | Description |
+|------|-------------|
+| <a name="output_project_name"></a> [project\_name](#output\_project\_name) | n/a |
+| <a name="output_vpc_aws_region"></a> [vpc\_aws\_region](#output\_vpc\_aws\_region) | n/a |
+| <a name="output_vpc_cidr_block"></a> [vpc\_cidr\_block](#output\_vpc\_cidr\_block) | n/a |
+| <a name="output_vpc_environment"></a> [vpc\_environment](#output\_vpc\_environment) | n/a |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | n/a |
+| <a name="output_vpc_private_subnet_ids"></a> [vpc\_private\_subnet\_ids](#output\_vpc\_private\_subnet\_ids) | n/a |
+| <a name="output_vpc_private_subnets_cidr_blocks"></a> [vpc\_private\_subnets\_cidr\_blocks](#output\_vpc\_private\_subnets\_cidr\_blocks) | n/a |
+| <a name="output_vpc_public_subnet_ids"></a> [vpc\_public\_subnet\_ids](#output\_vpc\_public\_subnet\_ids) | n/a |
+| <a name="output_vpc_public_subnets_cidr_blocks"></a> [vpc\_public\_subnets\_cidr\_blocks](#output\_vpc\_public\_subnets\_cidr\_blocks) | n/a |
