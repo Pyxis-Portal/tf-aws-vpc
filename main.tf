@@ -66,9 +66,6 @@ module "vpc" {
   tags = merge(
     local.tags,
     var.tags,
-    {
-      Name = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
-    }
   ) 
 }
 
