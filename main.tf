@@ -27,7 +27,7 @@ data "aws_vpc_endpoint_service" "sts" {
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  version = "2.70.0"
+  version = "2.71.0"
 
   enable_nat_gateway     = true
   one_nat_gateway_per_az = false
@@ -67,9 +67,8 @@ module "vpc" {
     local.tags,
     var.tags,
     {
-      Name                               = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
-      "kubernetes.io/cluster/my-cluster" = "shared"
-    },
+      Name = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
+    }
   ) 
 }
 

@@ -55,7 +55,7 @@ variable "cidr_subnet_bits" {
 }
 
 variable tags {
-  type        = any
+  type        = map(string)
   default     = {} 
   description = "general tags"
 }
