@@ -53,3 +53,9 @@ variable "cidr_subnet_bits" {
   type    = number
   default = 3
 }
+
+variable tags {
+  type        = any
+  default     = {} 
+  description = "general tags"
+}

@@ -2,7 +2,6 @@ locals {
   cwl_endpoint = "logs.${var.aws_region}.amazonaws.com"
 
   tags = {
-    Lambda      = var.lambda_function_name
     Terraform   = true
     Environment = var.environment
   }
@@ -66,12 +65,14 @@ module "vpc" {
     Name = var.vpc_name != "" ? "${var.vpc_name}-public-subnet" : "${var.environment}-public-${var.project_name}-subnet"
   }
 
-  tags = {
-    Terraform                          = "true"
-    Environment                        = var.environment
-    Name                               = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
-    "kubernetes.io/cluster/my-cluster" = "shared"
-  }
+  tags = merge(
+    local.tags,
+    var.tags,
+    {
+      Name                               = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
+      "kubernetes.io/cluster/my-cluster" = "shared"
+    },
+  ) 
 }
 
 resource "aws_security_group" "sqs_vpc_endpoint_security_group" {
@@ -81,9 +82,13 @@ resource "aws_security_group" "sqs_vpc_endpoint_security_group" {
   description = "Controls Traffic to the AWS SQS VPC Endpoint"
   vpc_id      = module.vpc.vpc_id
 
-  tags = {
-    Name = "${var.environment}-${var.project_name}-vpc-e-sqs"
-  }
+  tags = merge(
+    local.tags,
+    var.tags,
+    {
+      Name = "${var.environment}-${var.project_name}-vpc-e-sqs"
+    }
+  ) 
 }
 
 resource "aws_vpc_endpoint" "sqs" {
@@ -105,9 +110,13 @@ resource "aws_security_group" "sts_vpc_endpoint_security_group" {
   description = "Controls Traffic to the AWS STS VPC Endpoint"
   vpc_id      = module.vpc.vpc_id
 
-  tags = {
-    Name = "${var.environment}-${var.project_name}-vpc-e-sts"
-  }
+  tags = merge(
+    local.tags,
+    var.tags,
+    {
+      Name = "${var.environment}-${var.project_name}-vpc-e-sts"
+    }
+  ) 
 }
 
 resource "aws_vpc_endpoint" "sts" {
