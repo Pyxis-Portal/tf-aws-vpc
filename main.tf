@@ -39,7 +39,7 @@ module "vpc" {
   enable_s3_endpoint     = var.vpc_enable_s3_endpoint
   name                   = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
   cidr                   = var.project_vpc_cidr
-  azs                    = ["${var.aws_region}a", "${var.aws_region}b", "${var.aws_region}c", "${var.aws_region}d"]
+  azs                    = ["${var.aws_region}a", "${var.aws_region}b"]
   private_subnets = var.private_subnets
   public_subnets = var.public_subnets
 
