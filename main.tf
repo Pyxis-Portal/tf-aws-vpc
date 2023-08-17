@@ -39,9 +39,9 @@ module "vpc" {
   enable_s3_endpoint     = var.vpc_enable_s3_endpoint
   name                   = var.vpc_name != "" ? var.vpc_name : "${var.environment}-${var.project_name}-vpc"
   cidr                   = var.project_vpc_cidr
-  azs                    = ["${var.aws_region}a", "${var.aws_region}b", "${var.aws_region}c", "${var.aws_region}d"]
-  private_subnets = var.private_subnets
-  public_subnets = var.public_subnets
+  azs                    = var.availability_zones
+  private_subnets        = var.private_subnets
+  public_subnets         = var.public_subnets
 
   private_subnet_tags = {
     Name = var.vpc_name != "" ? "${var.vpc_name}-private-subnet" : "${var.environment}-private-${var.project_name}-subnet"
@@ -133,8 +133,8 @@ resource "aws_vpc_endpoint" "this" {
   subnet_ids         = lookup(var.vpc_endpoint[count.index], "subnet_ids", module.vpc.private_subnets)
   #dns_options        = lookup(var.vpc_endpoint[count.index], "dns_options", null)
   #ip_address_type    = lookup(var.vpc_endpoint[count.index], "ip_address_type", null)
-  route_table_ids    = lookup(var.vpc_endpoint[count.index], "type", "Gateway") == "Gateway" ? lookup(var.vpc_endpoint[count.index], "route_table_ids", module.vpc.private_route_table_ids) : null
-  policy             = lookup(var.vpc_endpoint[count.index], "policy", null)
+  route_table_ids = lookup(var.vpc_endpoint[count.index], "type", "Gateway") == "Gateway" ? lookup(var.vpc_endpoint[count.index], "route_table_ids", module.vpc.private_route_table_ids) : null
+  policy          = lookup(var.vpc_endpoint[count.index], "policy", null)
 
 
   private_dns_enabled = lookup(var.vpc_endpoint[count.index], "private_dns_enabled", false)

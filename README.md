@@ -1,3 +1,10 @@
+<!-- BEGIN_TF_DOCS -->
+<!-- markdownlint-disable MD033 -->
+
+# tf-aws-vpc
+
+VPC terraform module
+
 ## Requirements
 
 | Name | Version |
@@ -24,9 +31,11 @@
 |------|------|
 | [aws_security_group.sqs_vpc_endpoint_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.sts_vpc_endpoint_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_security_group.vpc_endpoint_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_vpc_endpoint.dynamodb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
 | [aws_vpc_endpoint.sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
 | [aws_vpc_endpoint.sts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
 | [aws_vpc_endpoint_service.dynamodb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_endpoint_service) | data source |
 | [aws_vpc_endpoint_service.sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_endpoint_service) | data source |
 | [aws_vpc_endpoint_service.sts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_endpoint_service) | data source |
@@ -35,17 +44,25 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | List of availability zones that exists in selected region | `list(string)` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | n/a | `string` | `"us-east-1"` | no |
 | <a name="input_cidr_subnet_bits"></a> [cidr\_subnet\_bits](#input\_cidr\_subnet\_bits) | n/a | `number` | `3` | no |
+| <a name="input_ec2_sg_egress_rules"></a> [ec2\_sg\_egress\_rules](#input\_ec2\_sg\_egress\_rules) | description | `any` | `[]` | no |
+| <a name="input_ec2_sg_ingress_rules"></a> [ec2\_sg\_ingress\_rules](#input\_ec2\_sg\_ingress\_rules) | description | `any` | `[]` | no |
+| <a name="input_enable_nat_gateway"></a> [enable\_nat\_gateway](#input\_enable\_nat\_gateway) | Whether to enable Nat Gateway. If private\_subnets list is empty, this should | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Nombre del ambiente. e.g, dev, qa, stg, prod | `string` | `"dev"` | no |
+| <a name="input_private_subnets"></a> [private\_subnets](#input\_private\_subnets) | List of cidrs for subnets | `list(string)` | `[]` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | n/a | `string` | `"my-project"` | no |
 | <a name="input_project_vpc_cidr"></a> [project\_vpc\_cidr](#input\_project\_vpc\_cidr) | n/a | `string` | `"10.10.0.0/16"` | no |
+| <a name="input_public_subnets"></a> [public\_subnets](#input\_public\_subnets) | List of cidrs for subnets | `list(string)` | `[]` | no |
 | <a name="input_single_nat_gateway"></a> [single\_nat\_gateway](#input\_single\_nat\_gateway) | n/a | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | general tags | `map(string)` | `{}` | no |
 | <a name="input_vpc_enable_dynamodb_endpoint"></a> [vpc\_enable\_dynamodb\_endpoint](#input\_vpc\_enable\_dynamodb\_endpoint) | n/a | `bool` | `false` | no |
+| <a name="input_vpc_enable_endpoint"></a> [vpc\_enable\_endpoint](#input\_vpc\_enable\_endpoint) | description | `bool` | `false` | no |
 | <a name="input_vpc_enable_s3_endpoint"></a> [vpc\_enable\_s3\_endpoint](#input\_vpc\_enable\_s3\_endpoint) | n/a | `bool` | `false` | no |
 | <a name="input_vpc_enable_sqs_endpoint"></a> [vpc\_enable\_sqs\_endpoint](#input\_vpc\_enable\_sqs\_endpoint) | n/a | `bool` | `false` | no |
 | <a name="input_vpc_enable_sts_endpoint"></a> [vpc\_enable\_sts\_endpoint](#input\_vpc\_enable\_sts\_endpoint) | n/a | `bool` | `false` | no |
+| <a name="input_vpc_endpoint"></a> [vpc\_endpoint](#input\_vpc\_endpoint) | description | `any` | `[]` | no |
 | <a name="input_vpc_name"></a> [vpc\_name](#input\_vpc\_name) | n/a | `string` | `""` | no |
 
 ## Outputs

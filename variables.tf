@@ -61,42 +61,47 @@ variable "tags" {
 }
 
 variable "private_subnets" {
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
   description = "List of cidrs for subnets"
 }
 
 variable "public_subnets" {
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
   description = "List of cidrs for subnets"
 }
 
+variable "availability_zones" {
+  type        = list(string)
+  description = "List of availability zones that exists in selected region"
+}
+
 variable "enable_nat_gateway" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Whether to enable Nat Gateway. If private_subnets list is empty, this should"
 }
 
-variable vpc_endpoint {
+variable "vpc_endpoint" {
   type        = any
   default     = []
   description = "description"
 }
 
-variable vpc_enable_endpoint {
+variable "vpc_enable_endpoint" {
   type        = bool
-  default     = false 
+  default     = false
   description = "description"
 }
 
-variable ec2_sg_ingress_rules {
+variable "ec2_sg_ingress_rules" {
   type        = any
   default     = []
   description = "description"
 }
 
-variable ec2_sg_egress_rules {
+variable "ec2_sg_egress_rules" {
   type        = any
   default     = []
   description = "description"
